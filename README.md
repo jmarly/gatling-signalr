@@ -11,7 +11,7 @@ to stress a SignalR server.
 
 - JDK 1.8
 - Latest version of maven
-- clone and run the ASP.NET core ChatApp that is available in my reposotories
+- clone and run the ASP.NET core ChatApp that is available in my reposotories <https://github.com/jmarly/chatapp>
 
 ## Running the test
 
@@ -98,3 +98,5 @@ need to have a full fledge plugin.
 
 In this example, the async callbacks from the server suffer a rudimentary implementation. If time permits, future 
 release of this code may show an await implementation of these.
+
+if you want to get in touch : <info@applicationperformance.net>
