@@ -4,14 +4,12 @@ import io.gatling.core.Predef._
 import io.gatling.core.structure.ScenarioBuilder
 import net.applicationperformance.chains._
 
+import scala.concurrent.duration.DurationInt
+
 
 object ChatAppScenario {
 
   def ChatScenario(users: IndexedSeq[Map[String, String]]): ScenarioBuilder = scenario("Chat")
-    .exec(session => {
-      println(s"SESSION===>$session")
-      session
-    })
     .exec(
       feed(users),
       Home.get(),
@@ -21,8 +19,10 @@ object ChatAppScenario {
     .repeat(50) {
       exec(
         Messages.sendMessage("test")
-      )
-    }.exec(
-    Messages.closeHub()
-  )
+      ).pause(200 millisecond)
+    }
+    .pause(10)
+    .exec(
+      Messages.closeHub()
+    )
 }
