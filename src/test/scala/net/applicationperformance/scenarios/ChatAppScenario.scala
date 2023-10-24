@@ -16,13 +16,13 @@ object ChatAppScenario {
       Home.signIn(),
       Messages.view()
     )
-    .repeat(50) {
+    .repeat(50,"messageid") {
       exec(
-        Messages.sendMessage("test")
+        Messages.sendMessage("sending message #{messageid} to the server")
       ).pause(200 millisecond)
     }
-    .pause(10)
     .exec(
+      Messages.stopHub(),
       Messages.closeHub()
     )
 }

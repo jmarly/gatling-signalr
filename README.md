@@ -52,22 +52,34 @@ exec(
 )
 ```
 
-In our Action execute we can now apply the expression and wrap it with time catching logic, like this:
+In our Action execute we create a new thread to handle the SignalR API call. This is to ensure the blocking signslr 
+call don't block the Virtual users event loop.  
 
 ```scala
 override protected def execute(session: Session): Unit = {
-  val connection = session(connectionName).as[HubConnection]
-  // ...
-  val stTime = clock.nowMillis
-  retSession = toCall.apply(connection, session)
-  val enTime = clock.nowMillis
-  retSession = retSession.logGroupRequestTimings(stTime, enTime)
-  statsEngine.logResponse(session.scenario, session.groups, name, stTime, enTime, OK, None, None)
-  //...
-  next ! retSession
+  // prevent blocking the event loop with api blocking calls...
+  new Thread(new SignalRCallExecutor(
+    name,
+    session,
+    toCall,
+    ctx.coreComponents.statsEngine,
+    ctx.coreComponents.clock,
+    next
+  )).start()
 }
-
 ```
+In the executor thread we do:
+```scala
+    // ..
+    val stTime = clock.nowMillis
+    retSession = toCall.apply(connection,session)
+    val enTime = clock.nowMillis
+    retSession = retSession.logGroupRequestTimings(stTime,enTime)
+    statsEngine.logResponse(session.scenario,session.groups,name,stTime,enTime,OK,None, None)
+    // ...
+```
+After logging the response time, we place the next action in the event loop to resume the execution chain.
+
 Check the SignalRHubAction.scala source to see the above code.
 The Hub(<hubname>) build call is defined in SignalRHubActionBuilder.sca.
 

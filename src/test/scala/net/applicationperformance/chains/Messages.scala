@@ -56,12 +56,22 @@ object Messages extends LazyLogging{
     )
   }
 
-  def closeHub() : ChainBuilder = group("messages") {
+  def stopHub() : ChainBuilder = group("messages") {
     exec(
       Hub("chathub-stop") { (connection, session) => {
-        connection.stop()
+        connection.stop().blockingAwait()
         session
       }}
     )
   }
+
+  def closeHub() : ChainBuilder = group("messages") {
+    exec(
+      Hub("chathub-close") { (connection, session) => {
+        connection.close()
+        session
+      }}
+    )
+  }
+
 }

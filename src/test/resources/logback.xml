@@ -13,8 +13,9 @@
 	<!--
 	<logger name="io.gatling.http.engine.response" level="DEBUG" />
 	<logger name="net.applicationperformance" level="TRACE" />
-	-->
+	<logger name="com.microsoft.signalr" level="DEBUG" />
 
+	-->
 	<root level="WARN">
 		<appender-ref ref="CONSOLE" />
 	</root>
