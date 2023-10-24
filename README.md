@@ -23,11 +23,13 @@ mvn gatling:test
 
 ## Interesting bits in this code...
 
-As we call a third party library, by default, response times are not captured
+As we call a third party library we must consider a few things:
 
-Looking at following construct that builds an exec chain to start
-a connection: 
+1. The following exec block will 'work' ie. call the SignalR API, but it will potentially block the other vittual 
+   users while the SignalR call is executing as we are not supposed to make bloccking calls this way.
+2. The response time will not be reported.
 
+!! This code is WRONG.. no blocking calls inside an exec.
 ```scala
 exec(session => {
   val connection = session("myhubconnection").as[HubConnection]
@@ -35,13 +37,9 @@ exec(session => {
   session
 })
 ```
-This will start the connection, but will not report timings, even if one wraps the 3rd party execs in a 
-group, since the groups will not have individual request response times, the group stats are not reported on.
+To make our SignalR call we must build a specific action and place the call in its own thread.
 
-To capture the reponse time properly, we can move up into the stack and place the SignalR calls into an action.
-Implementing all the SignalR calls can be a bit complex, thanks to Scala expressions, this can be super easy.
-
-The call above can be transformed into
+in our scenario we will have the following implementation:
 
 ```scala
 exec(
@@ -68,7 +66,7 @@ override protected def execute(session: Session): Unit = {
   )).start()
 }
 ```
-In the executor thread we do:
+In the SignalR executor thread we do:
 ```scala
     // ..
     val stTime = clock.nowMillis
