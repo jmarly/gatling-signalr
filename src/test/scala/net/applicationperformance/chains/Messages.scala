@@ -6,6 +6,7 @@ import io.gatling.core.session.{Expression, GroupBlock}
 import com.microsoft.signalr._
 import com.typesafe.scalalogging.LazyLogging
 import io.gatling.core.structure.ChainBuilder
+import net.applicationperformance.actions.Hub
 
 object Messages extends LazyLogging{
 

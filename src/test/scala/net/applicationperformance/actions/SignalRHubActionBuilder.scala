@@ -1,4 +1,4 @@
-package net.applicationperformance.chains
+package net.applicationperformance.actions
 
 import com.microsoft.signalr.HubConnection
 import io.gatling.core.action.Action
