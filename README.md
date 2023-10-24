@@ -56,14 +56,14 @@ call don't block the Virtual users event loop.
 ```scala
 override protected def execute(session: Session): Unit = {
   // prevent blocking the event loop with api blocking calls...
-  new Thread(new SignalRCallExecutor(
+  SignalRExecutor.threadPool.submit(new SignalRCallExecutor(
     name,
     session,
     toCall,
     ctx.coreComponents.statsEngine,
     ctx.coreComponents.clock,
     next
-  )).start()
+  ))
 }
 ```
 In the SignalR executor thread we do:

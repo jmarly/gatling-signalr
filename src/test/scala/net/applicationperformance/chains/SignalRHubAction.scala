@@ -10,6 +10,8 @@ import io.gatling.core.stats.StatsEngine
 import io.gatling.core.structure.ScenarioContext
 import io.gatling.recorder.internal.bouncycastle.oer.its.ieee1609dot2.basetypes.Duration
 
+import java.util.concurrent.{ExecutorService, Executors}
+
 class SignalRHubAction(
                    val name : String,
                       val ctx : ScenarioContext,
@@ -19,15 +21,19 @@ class SignalRHubAction(
 
   override protected def execute(session: Session): Unit = {
     // prevent blocking the event loop with api blocking calls...
-    new Thread(new SignalRCallExecutor(
+    SignalRExecutor.threadPool.submit(new SignalRCallExecutor(
       name,
       session,
       toCall,
       ctx.coreComponents.statsEngine,
       ctx.coreComponents.clock,
       next
-    )).start()
+    ))
   }
+}
+
+object SignalRExecutor {
+  val threadPool: ExecutorService = Executors.newFixedThreadPool(20)
 }
 
 class SignalRCallExecutor(
