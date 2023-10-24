@@ -33,7 +33,7 @@ class SignalRHubAction(
 }
 
 object SignalRExecutor {
-  val threadPool: ExecutorService = Executors.newFixedThreadPool(20)
+  val threadPool: ExecutorService = Executors.newCachedThreadPool()
 }
 
 class SignalRCallExecutor(
