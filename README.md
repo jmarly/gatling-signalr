@@ -29,7 +29,8 @@ As we call a third party library we must consider a few things:
    users while the SignalR call is executing as we are not supposed to make bloccking calls this way.
 2. The response time will not be reported.
 
-!! This code is WRONG.. no blocking calls inside an exec.
+The following implementation would potentially block the Gatling execution threads, to avoid this, we move the 
+SignalR calls to their own thread pool and insure the Galting threads are only used to dispatch the API calls.
 ```scala
 exec(session => {
   val connection = session("myhubconnection").as[HubConnection]
@@ -37,9 +38,8 @@ exec(session => {
   session
 })
 ```
-To make our SignalR call we must build a specific action and place the call in its own thread.
-
-in our scenario we will have the following implementation:
+We resolve the above issue by building underlying actions to submit the actual API execution to a separate thread 
+pool. To build the chain, we have the Hub action buolder:
 
 ```scala
 exec(
@@ -50,7 +50,7 @@ exec(
 )
 ```
 
-In our Action execute we create a new thread to handle the SignalR API call. This is to ensure the blocking signslr 
+In our Hub Action execute we create a new thread to handle the SignalR API call. This is to ensure the blocking signslr 
 call don't block the Virtual users event loop.  
 
 ```scala
