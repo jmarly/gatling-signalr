@@ -8,13 +8,13 @@
   <version>1.0.0</version>
 
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <gatling.version>3.9.5</gatling.version>
-    <gatling-maven-plugin.version>4.2.7</gatling-maven-plugin.version>
-    <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-    <scala-maven-plugin.version>4.4.1</scala-maven-plugin.version>
+    <gatling-maven-plugin.version>4.6.0</gatling-maven-plugin.version>
+    <scala-maven-plugin.version>4.8.1</scala-maven-plugin.version>
+    <scala.version>2.13.10</scala.version>
+    <java.version>19</java.version>
+    <signalr.version>8.0.0-rc.2.23480.2</signalr.version>
   </properties>
 
   <dependencies>
@@ -27,7 +27,7 @@
     <dependency>
       <groupId>com.microsoft.signalr</groupId>
       <artifactId>signalr</artifactId>
-      <version>8.0.0-rc.2.23480.2</version>
+      <version>${signalr.version}</version>
     </dependency>
   </dependencies>
   <build>
@@ -45,11 +45,12 @@
             <goal>testCompile</goal>
           </goals>
           <configuration>
+            <scalaVersion>${scala.version}</scalaVersion>
+            <release>${java.version}</release>
             <jvmArgs>
               <jvmArg>-Xss100M</jvmArg>
             </jvmArgs>
             <args>
-              <arg>-target:jvm-1.8</arg>
               <arg>-deprecation</arg>
               <arg>-feature</arg>
               <arg>-unchecked</arg>
@@ -60,7 +61,6 @@
         </execution>
       </executions>
     </plugin>
-
       <plugin>
         <groupId>io.gatling</groupId>
         <artifactId>gatling-maven-plugin</artifactId>

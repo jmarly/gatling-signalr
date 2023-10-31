@@ -9,7 +9,7 @@ to stress a SignalR server.
 
 ## Prerequisites
 
-- JDK 1.8
+- JDK 19
 - Latest version of maven
 - clone and run the ASP.NET core ChatApp that is available in my reposotories <https://github.com/jmarly/chatapp>
 
